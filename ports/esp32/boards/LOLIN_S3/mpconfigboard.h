@@ -1,7 +1,10 @@
 #define MICROPY_HW_BOARD_NAME               "LOLIN S3"
 #define MICROPY_HW_MCU_NAME                 "ESP32S3"
 
+<<<<<<< HEAD
 #define MICROPY_PY_BLUETOOTH                (0)
+=======
+>>>>>>> lolin_s3
 #define MICROPY_PY_MACHINE_DAC              (0)
 
 // Enable UART REPL for modules that have an external USB-UART and don't use native USB.

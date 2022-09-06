@@ -1,6 +1,10 @@
 {
     "deploy": [
+<<<<<<< HEAD
         "../deploy_s3.md"
+=======
+        "./deploy.md"
+>>>>>>> lolin_s3
     ],
     "docs": "",
     "features": [
