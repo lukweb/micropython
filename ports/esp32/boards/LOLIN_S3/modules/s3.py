@@ -17,14 +17,6 @@ I2C_SCL = const(41)
 
 # RGB_LED
 RGB_DATA = const(38)
-<<<<<<< HEAD
-_rgb_led=neopixel.NeoPixel(Pin(RGB_DATA), 1)
-
-def rgb_led(r=0,g=0,b=0):
-    _rgb_led[0]=(r,g,b)
-    _rgb_led.write()
-
-=======
 _rgb_led = neopixel.NeoPixel(Pin(RGB_DATA), 1)
 
 
@@ -33,7 +25,6 @@ def rgb_led(r=0, g=0, b=0):
     _rgb_led.write()
 
 
->>>>>>> lolin_s3
 # BUTTON
 BUTTON = const(0)
 button = Pin(BUTTON, Pin.IN, Pin.PULL_UP)
