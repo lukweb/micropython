@@ -1,5 +1,4 @@
 name: build lolin
-
 on:
   push:
   pull_request:
@@ -21,8 +20,4 @@ jobs:
     - name: Install packages
       run: source tools/ci.sh && ci_esp32_idf44_setup
     - name: Build LOLIN C3 MINI
-      run: source esp-idf/export.sh
-          make ${MAKEOPTS} -C mpy-cross
-          make ${MAKEOPTS} -C ports/esp32 submodules
-          make ${MAKEOPTS} -C ports/esp32 BOARD=LOLIN_C3_MINI
-
+      run: source tools/ci_lolin.sh && ci_lolin_c3_mini_build
