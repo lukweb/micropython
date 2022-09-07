@@ -137,7 +137,7 @@ function ci_esp32_build {
     ci_native_mpy_modules_build xtensawin
 }
 
-function ci_esp32_lolin_build{
+function ci_esp32_lolin_build {
     source esp-idf/export.sh
     make ${MAKEOPTS} -C mpy-cross
     make ${MAKEOPTS} -C ports/esp32 submodules
@@ -145,8 +145,8 @@ function ci_esp32_lolin_build{
     make ${MAKEOPTS} -C ports/esp32 BOARD=$1
 }
 
-function ci_lolin_c3_mini_build{
-    ci_esp32_lolin_build LOLIN_C3_mini
+function ci_lolin_c3_mini_build {
+    ci_esp32_lolin_build LOLIN_C3_MINI
 }
 
 
