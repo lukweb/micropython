@@ -1,4 +1,4 @@
-name: esp32 port
+name: build lolin
 
 on:
   push:
