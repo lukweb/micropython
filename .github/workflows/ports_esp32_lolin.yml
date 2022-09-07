@@ -21,9 +21,6 @@ jobs:
       run: source tools/ci.sh && ci_esp32_idf44_setup
     - name: Build LOLIN C3 MINI
       run: source tools/ci_lolin.sh && ci_lolin_c3_mini_build
-    
-    - name: Zip the Build
-      run: zip -r ${{ secrets.ReleaseZipName }} ./ports/esp32/build-LOLIN_C3_MINI/firmware.bin
       
     - name: Create Release and Upload Release Asset
       uses: softprops/action-gh-release@v1
@@ -35,5 +32,5 @@ jobs:
         draft: false
         prerelease: false
         files: |
-          ${{ secrets.ReleaseZipName }}.zip
+          ./ports/esp32/build-LOLIN_C3_MINI/firmware.bin
           LICENSE 
