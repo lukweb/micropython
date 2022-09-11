@@ -23,7 +23,8 @@ jobs:
       run: source tools/ci.sh && ci_esp32_idf44_setup
     - name: Build LOLIN C3 MINI
       run: source tools/ci_lolin.sh && ci_lolin_build
-      
+    - name: change firmware name
+      run: python ./tools/lolin_tool.py
     - name: Create Release and Upload Release Asset
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
@@ -34,5 +35,8 @@ jobs:
         # draft: false
         # prerelease: false
         files: |
-          ./ports/esp32/build-LOLIN_C3_MINI/*.bin
-          LICENSE 
+          ./ports/esp32/build-LOLIN_C3_MINI/firmware*.bin
+          ./ports/esp32/build-LOLIN_S2_MINI/firmware*.bin
+          ./ports/esp32/build-LOLIN_S2_PICO/firmware*.bin
+          ./ports/esp32/build-LOLIN_S3/firmware*.bin
+
