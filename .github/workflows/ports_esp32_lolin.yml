@@ -1,8 +1,8 @@
 name: build lolin
 on:
   push:
-    tags:
-      - 'v*'
+    # tags:
+    #   - 'v*'
   pull_request:
     paths:
       - '.github/workflows/*.yml'
@@ -21,13 +21,13 @@ jobs:
     - uses: actions/checkout@v2
     - name: Install packages
       run: source tools/ci.sh && ci_esp32_idf44_setup
-    - name: Build LOLIN C3 MINI
+    - name: Build LOLIN Boards
       run: source tools/ci_lolin.sh && ci_lolin_build
-    - name: change firmware name
+    - name: Change firmware name
       run: python ./tools/lolin_tool.py
     - name: Create Release and Upload Release Asset
       uses: softprops/action-gh-release@v1
-      if: startsWith(github.ref, 'refs/tags/')
+      # if: startsWith(github.ref, 'refs/tags/')
       with:
         # tag_name: ${{ github.ref }}
         # name: Release ${{ github.ref }}
