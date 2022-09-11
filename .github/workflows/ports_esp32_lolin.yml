@@ -35,8 +35,6 @@ jobs:
         # draft: false
         # prerelease: false
         files: |
-          ./ports/esp32/build-LOLIN_C3_MINI/firmware*.bin
-          ./ports/esp32/build-LOLIN_S2_MINI/firmware*.bin
-          ./ports/esp32/build-LOLIN_S2_PICO/firmware*.bin
-          ./ports/esp32/build-LOLIN_S3/firmware*.bin
+          ./ports/esp32/build-*/firmware*.bin
+
 
