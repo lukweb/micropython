@@ -1,6 +1,8 @@
 name: build lolin
 on:
   push:
+    tags:
+      - 'v*'
   pull_request:
     paths:
       - '.github/workflows/*.yml'
