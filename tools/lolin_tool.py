@@ -10,7 +10,7 @@ import subprocess
 
 def get_version_from_git():
     git_tag = subprocess.check_output(
-            ["git", "describe", "--tags", "--abbrev=0"],
+            ["git", "describe", "--abbrev=0"],
             stderr=subprocess.STDOUT,
             universal_newlines=True,
         ).strip()
