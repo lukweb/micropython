@@ -22,7 +22,7 @@ jobs:
     - name: Install packages
       run: source tools/ci.sh && ci_esp32_idf44_setup
     - name: Build LOLIN C3 MINI
-      run: source tools/ci_lolin.sh && ci_lolin_c3_mini_build
+      run: source tools/ci_lolin.sh && ci_lolin_build
       
     - name: Create Release and Upload Release Asset
       uses: softprops/action-gh-release@v1

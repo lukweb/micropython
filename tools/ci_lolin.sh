@@ -151,6 +151,18 @@ function ci_lolin_c3_mini_build {
     ci_esp32_lolin_build LOLIN_C3_MINI
 }
 
+function ci_lolin_build {
+    source esp-idf/export.sh
+    make ${MAKEOPTS} -C mpy-cross
+    make ${MAKEOPTS} -C ports/esp32 submodules
+    
+    make ${MAKEOPTS} -C ports/esp32 BOARD=LOLIN_C3_MINI
+    make ${MAKEOPTS} -C ports/esp32 BOARD=LOLIN_S2_MINI
+    make ${MAKEOPTS} -C ports/esp32 BOARD=LOLIN_S2_PICO
+    make ${MAKEOPTS} -C ports/esp32 BOARD=LOLIN_S3
+
+}
+
 
 ########################################################################################
 # ports/esp8266
