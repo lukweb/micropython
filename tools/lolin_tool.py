@@ -10,12 +10,14 @@ import subprocess
 
 def get_version_from_git():
     try:
+        
         git_tag = subprocess.check_output(
                 ["git", "describe", "--abbrev=0"],
                 stderr=subprocess.STDOUT,
                 universal_newlines=True,
             ).strip()
     except:
+        git_tag=""
         pass
     git_hash = subprocess.check_output(
             ["git", "rev-parse", "--short", "HEAD"],
