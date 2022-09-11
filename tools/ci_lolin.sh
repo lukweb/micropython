@@ -143,6 +143,8 @@ function ci_esp32_lolin_build {
     make ${MAKEOPTS} -C ports/esp32 submodules
     
     make ${MAKEOPTS} -C ports/esp32 BOARD=$1
+    
+
 }
 
 function ci_lolin_c3_mini_build {
