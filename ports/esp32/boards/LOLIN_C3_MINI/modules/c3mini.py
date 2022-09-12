@@ -23,7 +23,7 @@ RGB_DATA = const(7)
 _rgb_led = neopixel.NeoPixel(Pin(RGB_DATA), 1)
 
 # BUTTON
-BUTTON = const(0)
+BUTTON = const(9)
 
 # Built-in peripherals
 
