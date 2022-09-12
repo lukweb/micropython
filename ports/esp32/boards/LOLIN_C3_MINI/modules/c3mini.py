@@ -2,6 +2,7 @@
 
 from micropython import const
 from machine import Pin
+import neopixel
 
 # Pin Assignments
 
@@ -17,6 +18,10 @@ I2C_SCL = const(10)
 # LED
 LED = const(7)
 
+# RGB_LED
+RGB_DATA = const(7)
+_rgb_led = neopixel.NeoPixel(Pin(RGB_DATA), 1)
+
 # BUTTON
 BUTTON = const(0)
 
@@ -24,3 +29,8 @@ BUTTON = const(0)
 
 led = Pin(LED, Pin.OUT, value=0)
 button = Pin(BUTTON, Pin.IN, Pin.PULL_UP)
+
+
+def rgb_led(r=0, g=0, b=0):
+    _rgb_led[0] = (r, g, b)
+    _rgb_led.write()
