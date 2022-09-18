@@ -454,14 +454,6 @@ function ci_unix_standard_run_tests {
     ci_unix_run_tests_full_helper standard
 }
 
-function ci_unix_dev_build {
-    ci_unix_build_helper VARIANT=dev
-}
-
-function ci_unix_dev_run_tests {
-    ci_unix_run_tests_helper VARIANT=dev
-}
-
 function ci_unix_coverage_setup {
     sudo pip3 install setuptools
     sudo pip3 install pyelftools
@@ -602,8 +594,6 @@ function ci_unix_macos_build {
     #make ${MAKEOPTS} -C ports/unix deplibs
     make ${MAKEOPTS} -C ports/unix
     # check for additional compiler errors/warnings
-    make ${MAKEOPTS} -C ports/unix VARIANT=dev submodules
-    make ${MAKEOPTS} -C ports/unix VARIANT=dev
     make ${MAKEOPTS} -C ports/unix VARIANT=coverage submodules
     make ${MAKEOPTS} -C ports/unix VARIANT=coverage
 }
@@ -632,7 +622,7 @@ function ci_unix_qemu_mips_run_tests {
     # - (i)listdir does not work, it always returns the empty list (it's an issue with the underlying C call)
     # - ffi tests do not work
     file ./ports/unix/build-coverage/micropython
-    (cd tests && MICROPY_MICROPYTHON=../ports/unix/build-coverage/micropython ./run-tests.py --exclude 'vfs_posix.py' --exclude 'ffi_(callback|float|float2).py')
+    (cd tests && MICROPY_MICROPYTHON=../ports/unix/build-coverage/micropython ./run-tests.py --exclude 'vfs_posix.*\.py' --exclude 'ffi_(callback|float|float2).py')
 }
 
 function ci_unix_qemu_arm_setup {
@@ -652,7 +642,7 @@ function ci_unix_qemu_arm_run_tests {
     # - (i)listdir does not work, it always returns the empty list (it's an issue with the underlying C call)
     export QEMU_LD_PREFIX=/usr/arm-linux-gnueabi
     file ./ports/unix/build-coverage/micropython
-    (cd tests && MICROPY_MICROPYTHON=../ports/unix/build-coverage/micropython ./run-tests.py --exclude 'vfs_posix.py')
+    (cd tests && MICROPY_MICROPYTHON=../ports/unix/build-coverage/micropython ./run-tests.py --exclude 'vfs_posix.*\.py')
 }
 
 ########################################################################################
