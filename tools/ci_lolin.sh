@@ -185,8 +185,6 @@ function ci_esp8266_path {
 function ci_esp8266_build {
     make ${MAKEOPTS} -C mpy-cross
     make ${MAKEOPTS} -C ports/esp8266 submodules
-    make ${MAKEOPTS} -C ports/esp8266
-    make ${MAKEOPTS} -C ports/esp8266 BOARD=GENERIC_512K
-    make ${MAKEOPTS} -C ports/esp8266 BOARD=GENERIC_1M
+    make ${MAKEOPTS} -C ports/esp8266 BOARD=LOLIN_D1_MINI
 }
 

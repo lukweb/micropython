@@ -20,7 +20,7 @@ def get_version_from_git():
 
 
 def main():
-    dirs = glob.glob("./ports/esp32/build-*")
+    dirs = glob.glob("./ports/*/build-*")
     print(dirs)
     git_ver = get_version_from_git()
     print(git_ver)
