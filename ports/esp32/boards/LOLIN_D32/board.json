@@ -1,0 +1,19 @@
+{
+    "deploy": [
+        "../deploy.md"
+    ],
+    "docs": "",
+    "features": [
+        "Breadboard Friendly",
+        "BLE",
+        "WiFi"
+    ],
+    "images": [
+        "lolin_d32.jpg"
+    ],
+    "mcu": "esp32",
+    "product": "LOLIN D32",
+    "thumbnail": "",
+    "url": "https://www.wemos.cc/en/latest/d32/d32.html",
+    "vendor": "Wemos"
+}
