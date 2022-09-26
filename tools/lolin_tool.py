@@ -21,6 +21,9 @@ def get_version_from_git():
 
 
 def main():
+
+    firmware_names = ["firmware.bin", "firmware-combined.bin"]
+
     dirs = glob.glob("./ports/*/build-*")
     print(dirs)
     git_ver = get_version_from_git()
@@ -29,15 +32,13 @@ def main():
         name = d[d.find("build-") + 6 :]
         # print(name)
         try:
-
             new_name = d + "/firmware-" + name + "-" + git_ver + ".bin"
+            old_name = ""
 
-            if len(glob.glob(d + "/firmware.bin")) == 1:
-                old_name = d + "/firmware.bin"  # for esp32
-            elif len(glob.glob(d + "/firmware-combined.bin")) == 1:
-                old_name = d + "/firmware-combined.bin"  # for esp8266
-            else:
-                old_name = ""
+            for f_name in firmware_names:
+                if len(glob.glob(d + "/" + f_name)) == 1:
+                    old_name = d + "/" + f_name
+                    break
 
             if old_name != "":
                 os.rename(old_name, new_name)
