@@ -3,6 +3,7 @@
 
 import argparse
 import glob
+from hashlib import new
 import itertools
 import os
 import re
@@ -28,7 +29,20 @@ def main():
         name = d[d.find("build-") + 6 :]
         # print(name)
         try:
-            os.rename(d + "/firmware.bin", d + "/firmware-" + name + "-" + git_ver + ".bin")
+
+            new_name = d + "/firmware-" + name + "-" + git_ver + ".bin"
+
+            if len(glob.glob(d + "/firmware.bin")) == 1:
+                old_name = d + "/firmware.bin"  # for esp32
+            elif len(glob.glob(d + "/firmware-combined.bin")) == 1:
+                old_name = d + "/firmware-combined.bin"  # for esp8266
+            else:
+                old_name = ""
+
+            if old_name != "":
+                os.rename(old_name, new_name)
+                print(old_name, " ---> ", new_name)
+
         except:
             pass
 
