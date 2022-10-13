@@ -19,3 +19,5 @@ require("umqtt.simple")
 require("umqtt.robust")
 
 freeze("./modules")
+
+require("sht3x")
