@@ -31,7 +31,7 @@ _rgb_led = neopixel.NeoPixel(Pin(RGB_DATA), 1)
 
 
 def rgb_led(r=0, g=0, b=0):
-    _rgb_led[0] = (r, g, b)
+    _rgb_led[0] = (g, r, b)
     _rgb_led.write()
 
 
