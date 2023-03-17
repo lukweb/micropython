@@ -196,6 +196,16 @@
 #define MICROPY_PY_MACHINE_SOFT_PWM (0)
 #endif
 
+#define MICROPY_PY_MACHINE_PWM_INIT (1)
+#define MICROPY_PY_MACHINE_PWM_DUTY (1)
+#define MICROPY_PY_MACHINE_PWM_DUTY_U16_NS (1)
+
+#if MICROPY_PY_MACHINE_HW_PWM
+#define MICROPY_PY_MACHINE_PWM_INCLUDEFILE "ports/nrf/modules/machine/pwm.c"
+#elif MICROPY_PY_MACHINE_SOFT_PWM
+#define MICROPY_PY_MACHINE_PWM_INCLUDEFILE "ports/nrf/modules/machine/soft_pwm.c"
+#endif
+
 #ifndef MICROPY_PY_MACHINE_TIMER_NRF
 #define MICROPY_PY_MACHINE_TIMER_NRF (1)
 #endif
@@ -276,6 +286,11 @@
 typedef int mp_int_t; // must be pointer size
 typedef unsigned int mp_uint_t; // must be pointer size
 typedef long mp_off_t;
+
+#if MICROPY_HW_ENABLE_RNG
+#define MICROPY_PY_URANDOM_SEED_INIT_FUNC (rng_generate_random_word())
+long unsigned int rng_generate_random_word(void);
+#endif
 
 #if BOARD_SPECIFIC_MODULES
 #include "boardmodules.h"

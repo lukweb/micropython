@@ -42,8 +42,10 @@ The :mod:`machine` module::
     machine.freq(96_000_000)  # set the CPU frequency to 96 MHz
 
 The range accepted by the function call is 1_000_000 to 200_000_000 (1 MHz to 200 MHz)
-for SAMD51 and 1_000_000 to 48_000_000 (1 MHz to 48 MHz) for SAMD21. The safe
-range for SAMD51 according to the data sheet is 96 MHz to 120 MHz.
+for SAMD51 and 1_000_000 to 54_000_000 (1 MHz to 54 MHz) for SAMD21. The safe
+range for SAMD51 according to the data sheet is up to 120 MHz, for the SAMD21 up to 48Mhz.
+Frequencies below 48Mhz are set by dividing 48Mhz by an integer, limiting the number of
+discrete frequencies to 24Mhz, 16Mhz, 12MHz, and so on.
 At frequencies below 8 MHz USB will be disabled. Changing the frequency below 48 MHz
 impacts the baud rates of UART, I2C and SPI. These have to be set again after
 changing the CPU frequency. The ms and µs timers are not affected by the frequency
@@ -254,16 +256,38 @@ an external ADC.
 ADC Constructor
 ```````````````
 
-.. class:: ADC(dest, *, average=16)
+.. class:: ADC(dest, *, average=16, vref=n)
   :noindex:
 
-    Construct and return a new ADC object using the following parameters:
+Construct and return a new ADC object using the following parameters:
 
-      - *dest* is the Pin object on which the ADC is output.
+  - *dest* is the Pin object on which the ADC is output.
 
-    Keyword arguments:
+Keyword arguments:
 
-      - *average* is used to reduce the noise. With a value of 16 the LSB noise is about 1 digit.
+  - *average* is used to reduce the noise. With a value of 16 the LSB noise is about 1 digit.
+  - *vref* sets the reference voltage for the ADC.
+
+    The default setting is for 3.3V. Other values are:
+
+    ==== ==============================  ===============================
+    vref SAMD21                          SAMD51
+    ==== ==============================  ===============================
+    0    1.0V voltage reference          internal bandgap reference (1V)
+    1    1/1.48 Analogue voltage supply  Analogue voltage supply
+    2    1/2 Analogue voltage supply     1/2 Analogue voltage supply
+    3    External reference A            External reference A
+    4    External reference B            External reference B
+    5    -                               External reference C
+    ==== ==============================  ===============================
+
+ADC Methods
+```````````
+
+.. method:: read_u16()
+
+Read a single ADC value as unsigned 16 bit quantity. The voltage range is defined
+by the vref option of the constructor, the resolutions by the bits option.
 
 DAC (digital to analog conversion)
 ----------------------------------
@@ -279,6 +303,32 @@ The DAC class provides a fast digital to analog conversion. Usage example::
 
 The resolution of the DAC is 12 bit for SAMD51 and 10 bit for SAMD21. SAMD21 devices
 have 1 DAC channel at GPIO PA02, SAMD51 devices have 2 DAC channels at GPIO PA02 and PA05.
+
+DAC Constructor
+```````````````
+
+.. class:: DAC(id, *, vref=3)
+  :noindex:
+
+The vref arguments defines the output voltage range, the callback option is used for
+dac_timed(). Suitable values for vref are:
+
+==== ============================  ================================
+vref SAMD21                        SAMD51
+==== ============================  ================================
+0    Internal voltage reference    Internal bandgap reference (~1V)
+1    Analogue voltage supply       Analogue voltage supply
+2    External reference            Unbuffered external reference
+3    -                             Buffered external reference
+==== ============================  ================================
+
+DAC Methods
+```````````
+
+.. method:: write(value)
+
+Write a single value to the selected DAC output. The value range is 0-1023 for
+SAMD21 and 0-4095 for SAMD51. The voltage range depends on the vref setting.
 
 Software SPI bus
 ----------------

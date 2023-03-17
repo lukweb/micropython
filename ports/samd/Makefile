@@ -1,13 +1,22 @@
+# Select the board to build for:
+ifdef BOARD_DIR
+# Custom board path - remove trailing slash and get the final component of
+# the path as the board name.
+BOARD ?= $(notdir $(BOARD_DIR:/=))
+else
+# If not given on the command line, then default to ADAFRUIT_ITSYBITSY_M4_EXPRESS.
 BOARD ?= ADAFRUIT_ITSYBITSY_M4_EXPRESS
 BOARD_DIR ?= boards/$(BOARD)
-BUILD ?= build-$(BOARD)
-
-CROSS_COMPILE ?= arm-none-eabi-
-UF2CONV ?= $(TOP)/tools/uf2conv.py
+endif
 
 ifeq ($(wildcard $(BOARD_DIR)/.),)
 $(error Invalid BOARD specified: $(BOARD_DIR))
 endif
+
+BUILD ?= build-$(BOARD)
+
+CROSS_COMPILE ?= arm-none-eabi-
+UF2CONV ?= $(TOP)/tools/uf2conv.py
 
 MCU_SERIES_LOWER = $(shell echo $(MCU_SERIES) | tr '[:upper:]' '[:lower:]')
 
@@ -52,9 +61,7 @@ PIN_AF_TABLE_CSV = mcu/$(MCU_SERIES_LOWER)/pin-af-table.csv
 BOARD_PINS = $(BOARD_DIR)/pins.csv
 GEN_PIN_AF = pin_af_table.c
 
-CFLAGS_MCU_SAMD21 = -mtune=cortex-m0plus -mcpu=cortex-m0plus -msoft-float
-CFLAGS_MCU_SAMD51 = -mtune=cortex-m4 -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard
-CFLAGS += $(INC) -Wall -Werror -std=c99 -nostdlib -mthumb $(CFLAGS_MCU_$(MCU_SERIES)) -fsingle-precision-constant -Wdouble-promotion
+CFLAGS += $(INC) -Wall -Werror -std=c99 -nostdlib -mthumb $(CFLAGS_MCU) -fsingle-precision-constant -Wdouble-promotion
 CFLAGS += -DMCU_$(MCU_SERIES) -D__$(CMSIS_MCU)__
 CFLAGS += $(CFLAGS_EXTRA)
 
@@ -80,6 +87,8 @@ ifneq ($(SRC_CXX)$(SRC_USERMOD_CXX)$(SRC_USERMOD_LIB_CXX),)
 LIBSTDCPP_FILE_NAME = "$(shell $(CXX) $(CXXFLAGS) -print-file-name=libstdc++.a)"
 LDFLAGS += -L"$(shell dirname $(LIBSTDCPP_FILE_NAME))"
 endif
+
+MPY_CROSS_FLAGS += -march=$(MPY_CROSS_MCU_ARCH)
 
 SRC_C += \
 	mcu/$(MCU_SERIES_LOWER)/clock_config.c \
@@ -117,6 +126,7 @@ SHARED_SRC_C += \
 	shared/runtime/stdout_helpers.c \
 	shared/runtime/sys_stdio_mphal.c \
 	shared/timeutils/timeutils.c \
+	shared/tinyusb/mp_cdc_common.c \
 
 ASF4_SRC_C += $(addprefix lib/asf4/$(MCU_SERIES_LOWER)/,\
 	hal/src/hal_atomic.c \

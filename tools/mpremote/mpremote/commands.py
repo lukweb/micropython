@@ -32,14 +32,15 @@ def do_connect(state, args=None):
             # Don't do implicit REPL command.
             state.did_action()
         elif dev == "auto":
-            # Auto-detect and auto-connect to the first available device.
+            # Auto-detect and auto-connect to the first available USB serial port.
             for p in sorted(serial.tools.list_ports.comports()):
-                try:
-                    state.pyb = pyboard.PyboardExtended(p.device, baudrate=115200)
-                    return
-                except pyboard.PyboardError as er:
-                    if not er.args[0].startswith("failed to access"):
-                        raise er
+                if p.vid is not None and p.pid is not None:
+                    try:
+                        state.pyb = pyboard.PyboardExtended(p.device, baudrate=115200)
+                        return
+                    except pyboard.PyboardError as er:
+                        if not er.args[0].startswith("failed to access"):
+                            raise er
             raise pyboard.PyboardError("no device found")
         elif dev.startswith("id:"):
             # Search for a device with the given serial number.
@@ -121,9 +122,9 @@ def do_filesystem(state, args):
     if command == "cat":
         # Don't be verbose by default when using cat, so output can be
         # redirected to something.
-        verbose = args.verbose == True
+        verbose = args.verbose is True
     else:
-        verbose = args.verbose != False
+        verbose = args.verbose is not False
 
     if command == "cp" and args.recursive:
         if paths[-1] != ":":
@@ -174,7 +175,7 @@ def do_edit(state, args):
             os.close(dest_fd)
             state.pyb.fs_touch(src)
             state.pyb.fs_get(src, dest, progress_callback=show_progress_bar)
-            if os.system("$EDITOR '%s'" % (dest,)) == 0:
+            if os.system('%s "%s"' % (os.getenv("EDITOR"), dest)) == 0:
                 state.pyb.fs_put(dest, src, progress_callback=show_progress_bar)
         finally:
             os.unlink(dest)

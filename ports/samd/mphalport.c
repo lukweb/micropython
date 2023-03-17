@@ -147,7 +147,7 @@ uint64_t mp_hal_ticks_us_64(void) {
         us64_upper++;
     }
     #if defined(MCU_SAMD21)
-    return ((uint64_t)us64_upper << 32) | us64_lower;
+    return ((uint64_t)us64_upper << 31) | (us64_lower >> 1);
     #elif defined(MCU_SAMD51)
     return ((uint64_t)us64_upper << 28) | (us64_lower >> 4);
     #endif
@@ -194,8 +194,13 @@ void mp_hal_stdout_tx_strn(const char *str, mp_uint_t len) {
             if (n > CFG_TUD_CDC_EP_BUFSIZE) {
                 n = CFG_TUD_CDC_EP_BUFSIZE;
             }
-            while (n > tud_cdc_write_available()) {
+            int timeout = 0;
+            // Wait with a max of USC_CDC_TIMEOUT ms
+            while (n > tud_cdc_write_available() && timeout++ < MICROPY_HW_USB_CDC_TX_TIMEOUT) {
                 MICROPY_EVENT_POLL_HOOK
+            }
+            if (timeout >= MICROPY_HW_USB_CDC_TX_TIMEOUT) {
+                break;
             }
             uint32_t n2 = tud_cdc_write(str + i, n);
             tud_cdc_write_flush();
