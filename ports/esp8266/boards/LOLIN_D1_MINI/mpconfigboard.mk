@@ -1,4 +1,4 @@
-LD_FILES = boards/esp8266_2m.ld
+LD_FILES = boards/esp8266_2MiB.ld
 
 MICROPY_PY_BTREE ?= 1
 MICROPY_VFS_FAT ?= 1
