@@ -43,6 +43,7 @@
 
 // Common option flags per-socket.
 #define MOD_NETWORK_SO_REUSEADDR    (0x0004)
+#define MOD_NETWORK_SO_BROADCAST    (0x0020)
 #define MOD_NETWORK_SO_KEEPALIVE    (0x0008)
 #define MOD_NETWORK_SO_SNDTIMEO     (0x1005)
 #define MOD_NETWORK_SO_RCVTIMEO     (0x1006)
@@ -101,7 +102,7 @@ typedef struct _mod_network_socket_obj_t {
     int32_t timeout;
     mp_obj_t callback;
     int32_t state   : 8;
-    #if MICROPY_PY_USOCKET_EXTENDED_STATE
+    #if MICROPY_PY_SOCKET_EXTENDED_STATE
     // Extended socket state for NICs/ports that need it.
     void *_private;
     #endif
