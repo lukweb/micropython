@@ -195,6 +195,7 @@ function ci_gc9a01_mpy_setup {
     git clone https://github.com/wemos/gc9a01_mpy.git
 
     export GC9A01_MPY_DIR=$(pwd)
+    echo GC9A01_MPY_DIR
     # find ~/ -name "gc9a01*"
     # find ~/ -name "micropython"
 }
