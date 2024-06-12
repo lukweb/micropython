@@ -28,8 +28,8 @@ jobs:
       uses: actions/checkout@master
       with:
         repository: wemos/gc9a01_mpy
-    # - name: Install gc9a01_mpy
-    #   run: source tools/ci_lolin.sh && ci_gc9a01_mpy_setup
+    - name: ls gc9a01_mpy
+      run: source tools/ci_lolin.sh && ci_gc9a01_mpy_setup
     - name: Build LOLIN esp32 Boards
       run: source tools/ci_lolin.sh && ci_lolin_build
     # - name: Install esp8266 packages
