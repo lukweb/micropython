@@ -156,15 +156,16 @@ function ci_lolin_build {
     make ${MAKEOPTS} -C mpy-cross
     make ${MAKEOPTS} -C ports/esp32 submodules
     
-    make ${MAKEOPTS} -C ports/esp32 BOARD=LOLIN_C3_MINI
-    make ${MAKEOPTS} -C ports/esp32 BOARD=LOLIN_S2_MINI
-    make ${MAKEOPTS} -C ports/esp32 BOARD=LOLIN_S2_PICO
-    make ${MAKEOPTS} -C ports/esp32 BOARD=LOLIN_S3
-    make ${MAKEOPTS} -C ports/esp32 BOARD=LOLIN_C3_PICO
-    make ${MAKEOPTS} -C ports/esp32 BOARD=LOLIN_D32
-    make ${MAKEOPTS} -C ports/esp32 BOARD=LOLIN_D32_PRO
-    make ${MAKEOPTS} -C ports/esp32 BOARD=LOLIN_S3_PRO
-    make ${MAKEOPTS} -C ports/esp32 BOARD=LOLIN_S3_MINI
+    # make ${MAKEOPTS} -C ports/esp32 BOARD=LOLIN_C3_MINI
+    # make ${MAKEOPTS} -C ports/esp32 BOARD=LOLIN_S2_MINI
+    # make ${MAKEOPTS} -C ports/esp32 BOARD=LOLIN_S2_PICO
+    # make ${MAKEOPTS} -C ports/esp32 BOARD=LOLIN_S3
+    # make ${MAKEOPTS} -C ports/esp32 BOARD=LOLIN_C3_PICO
+    # make ${MAKEOPTS} -C ports/esp32 BOARD=LOLIN_D32
+    # make ${MAKEOPTS} -C ports/esp32 BOARD=LOLIN_D32_PRO
+    # make ${MAKEOPTS} -C ports/esp32 BOARD=LOLIN_S3_PRO
+    # make ${MAKEOPTS} -C ports/esp32 BOARD=LOLIN_S3_MINI
+    make ${MAKEOPTS} -C ports/esp32 BOARD=LOLIN_S3_MINI_PRO
 
 }
 
@@ -190,3 +191,6 @@ function ci_esp8266_build {
     make ${MAKEOPTS} -C ports/esp8266 BOARD=LOLIN_D1_MINI
 }
 
+function ci_gc9a01_mpy_setup {
+    git clone https://github.com/wemos/gc9a01_mpy.git
+}
