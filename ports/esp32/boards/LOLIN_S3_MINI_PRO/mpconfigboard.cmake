@@ -11,5 +11,5 @@ set(SDKCONFIG_DEFAULTS
 
 set(MICROPY_FROZEN_MANIFEST ${MICROPY_BOARD_DIR}/manifest.py)
 
-set(USER_C_MODULES ../../../../gc9a01_mpy/src/micropython.cmake)
+set(USER_C_MODULES $ENV{GC9A01_MPY_DIR}/gc9a01_mpy/src/micropython.cmake)
 

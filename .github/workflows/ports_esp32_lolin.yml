@@ -22,8 +22,8 @@ jobs:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
-    # - name: Install esp32 packages
-    #   run: source tools/ci.sh && ci_esp32_idf_setup
+    - name: Install esp32 packages
+      run: source tools/ci.sh && ci_esp32_idf_setup
     - name: ls gc9a01_mpy
       run: source tools/ci_lolin.sh && ci_gc9a01_mpy_setup
     - name: Build LOLIN esp32 Boards

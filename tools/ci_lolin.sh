@@ -194,7 +194,7 @@ function ci_esp8266_build {
 function ci_gc9a01_mpy_setup {
     git clone https://github.com/wemos/gc9a01_mpy.git
 
-    pwd
-    find ~/ -name "gc9a01*"
-    find ~/ -name "micropython"
+    export GC9A01_MPY_DIR=$(pwd)
+    # find ~/ -name "gc9a01*"
+    # find ~/ -name "micropython"
 }
