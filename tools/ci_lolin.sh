@@ -193,4 +193,6 @@ function ci_esp8266_build {
 
 function ci_gc9a01_mpy_setup {
     git clone https://github.com/wemos/gc9a01_mpy.git
+    git -C gc9a01_mpy checkout master
+    ls ./gc9a01_mpy
 }
