@@ -1,2 +1,2 @@
 git describe | xargs git tag
-git describe | xargs git push tag 
+git describe | xargs proxychains -q git push origin 
