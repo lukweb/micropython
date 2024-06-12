@@ -8,8 +8,8 @@ import neopixel
 
 # SPI
 SPI_MOSI = const(4)
-SPI_MISO = const(3)
-SPI_CLK = const(2)
+SPI_MISO = const(0)
+SPI_CLK = const(1)
 
 # I2C
 I2C_SDA = const(8)
