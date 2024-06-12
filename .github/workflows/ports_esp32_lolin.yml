@@ -28,7 +28,6 @@ jobs:
       uses: actions/checkout@master
       with:
         repository: wemos/gc9a01_mpy
-        token: ${{ secrets.my_pat }}
     # - name: Install gc9a01_mpy
     #   run: source tools/ci_lolin.sh && ci_gc9a01_mpy_setup
     - name: Build LOLIN esp32 Boards
