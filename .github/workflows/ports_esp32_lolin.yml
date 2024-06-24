@@ -1,0 +1,49 @@
+name: build lolin
+on:
+  push:
+    tags:
+      - 'v*'
+  pull_request:
+    paths:
+      - '.github/workflows/*.yml'
+      - 'tools/**'
+      - 'py/**'
+      - 'extmod/**'
+      - 'lib/**'
+      - 'drivers/**'
+      - 'ports/esp32/**'
+      - 'ports/esp8266/**'
+
+jobs:
+
+  build_lolin:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: Install esp32 packages
+      run: source tools/ci.sh && ci_esp32_idf_setup
+    - name: Install gc9a01_mpy
+      run: source tools/ci_lolin.sh && ci_gc9a01_mpy_setup
+    - name: Build LOLIN esp32 Boards
+      run: source tools/ci_lolin.sh && ci_lolin_build
+    - name: Install esp8266 packages
+      run: source tools/ci.sh && ci_esp8266_setup && ci_esp8266_path >> $GITHUB_PATH
+    - name: Build LOLIN esp8266 Boards
+      run: source tools/ci_lolin.sh && ci_esp8266_build
+    - name: Change firmware name
+      run: python ./tools/lolin_tool.py
+    - name: Create Release and Upload Release Asset
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        # tag_name: ${{ github.ref }}
+        # name: Release ${{ github.ref }}
+        # body: TODO New Release.
+        # draft: false
+        # prerelease: false
+        files: |
+          ./ports/*/build-*/firmware-LOLIN*.bin
+
+

@@ -40,7 +40,7 @@
 #endif
 
 // This dispatcher function is expected to be independent of the implementation of long int
-STATIC mp_obj_t mp_obj_int_make_new(const mp_obj_type_t *type_in, size_t n_args, size_t n_kw, const mp_obj_t *args) {
+static mp_obj_t mp_obj_int_make_new(const mp_obj_type_t *type_in, size_t n_args, size_t n_kw, const mp_obj_t *args) {
     (void)type_in;
     mp_arg_check_num(n_args, n_kw, 0, 2, false);
 
@@ -48,22 +48,22 @@ STATIC mp_obj_t mp_obj_int_make_new(const mp_obj_type_t *type_in, size_t n_args,
         case 0:
             return MP_OBJ_NEW_SMALL_INT(0);
 
-        case 1:
-            if (mp_obj_is_int(args[0])) {
-                // already an int (small or long), just return it
-                return args[0];
-            } else if (mp_obj_is_str_or_bytes(args[0])) {
-                // a string, parse it
-                size_t l;
-                const char *s = mp_obj_str_get_data(args[0], &l);
-                return mp_parse_num_integer(s, l, 0, NULL);
+        case 1: {
+            mp_buffer_info_t bufinfo;
+            mp_obj_t o = mp_unary_op(MP_UNARY_OP_INT_MAYBE, args[0]);
+            if (o != MP_OBJ_NULL) {
+                return o;
+            } else if (mp_get_buffer(args[0], &bufinfo, MP_BUFFER_READ)) {
+                // a textual representation, parse it
+                return mp_parse_num_integer(bufinfo.buf, bufinfo.len, 0, NULL);
             #if MICROPY_PY_BUILTINS_FLOAT
             } else if (mp_obj_is_float(args[0])) {
                 return mp_obj_new_int_from_float(mp_obj_float_get(args[0]));
             #endif
             } else {
-                return mp_unary_op(MP_UNARY_OP_INT, args[0]);
+                mp_raise_TypeError_int_conversion(args[0]);
             }
+        }
 
         case 2:
         default: {
@@ -83,7 +83,7 @@ typedef enum {
     MP_FP_CLASS_OVERFLOW
 } mp_fp_as_int_class_t;
 
-STATIC mp_fp_as_int_class_t mp_classify_fp_as_int(mp_float_t val) {
+static mp_fp_as_int_class_t mp_classify_fp_as_int(mp_float_t val) {
     union {
         mp_float_t f;
         #if MICROPY_FLOAT_IMPL == MICROPY_FLOAT_IMPL_FLOAT
@@ -193,7 +193,7 @@ void mp_obj_int_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t
     }
 }
 
-STATIC const uint8_t log_base2_floor[] = {
+static const uint8_t log_base2_floor[] = {
     0, 1, 1, 2,
     2, 2, 2, 3,
     3, 3, 3, 3,
@@ -388,7 +388,7 @@ mp_obj_t mp_obj_int_binary_op_extra_cases(mp_binary_op_t op, mp_obj_t lhs_in, mp
 }
 
 // this is a classmethod
-STATIC mp_obj_t int_from_bytes(size_t n_args, const mp_obj_t *args) {
+static mp_obj_t int_from_bytes(size_t n_args, const mp_obj_t *args) {
     // TODO: Support signed param (assumes signed=False at the moment)
     (void)n_args;
 
@@ -417,10 +417,10 @@ STATIC mp_obj_t int_from_bytes(size_t n_args, const mp_obj_t *args) {
     return mp_obj_new_int_from_uint(value);
 }
 
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(int_from_bytes_fun_obj, 3, 4, int_from_bytes);
-STATIC MP_DEFINE_CONST_CLASSMETHOD_OBJ(int_from_bytes_obj, MP_ROM_PTR(&int_from_bytes_fun_obj));
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(int_from_bytes_fun_obj, 3, 4, int_from_bytes);
+static MP_DEFINE_CONST_CLASSMETHOD_OBJ(int_from_bytes_obj, MP_ROM_PTR(&int_from_bytes_fun_obj));
 
-STATIC mp_obj_t int_to_bytes(size_t n_args, const mp_obj_t *args) {
+static mp_obj_t int_to_bytes(size_t n_args, const mp_obj_t *args) {
     // TODO: Support signed param (assumes signed=False)
     (void)n_args;
 
@@ -448,14 +448,14 @@ STATIC mp_obj_t int_to_bytes(size_t n_args, const mp_obj_t *args) {
 
     return mp_obj_new_bytes_from_vstr(&vstr);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(int_to_bytes_obj, 3, 4, int_to_bytes);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(int_to_bytes_obj, 3, 4, int_to_bytes);
 
-STATIC const mp_rom_map_elem_t int_locals_dict_table[] = {
+static const mp_rom_map_elem_t int_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR_from_bytes), MP_ROM_PTR(&int_from_bytes_obj) },
     { MP_ROM_QSTR(MP_QSTR_to_bytes), MP_ROM_PTR(&int_to_bytes_obj) },
 };
 
-STATIC MP_DEFINE_CONST_DICT(int_locals_dict, int_locals_dict_table);
+static MP_DEFINE_CONST_DICT(int_locals_dict, int_locals_dict_table);
 
 MP_DEFINE_CONST_OBJ_TYPE(
     mp_type_int,

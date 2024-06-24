@@ -1,0 +1,19 @@
+{
+    "deploy": [
+        "../deploy_c3.md"
+    ],
+    "docs": "",
+    "features": [
+        "BLE",
+        "USB-C",
+        "WiFi"
+    ],
+    "images": [
+        "lolin_c3_pico.jpg"
+    ],
+    "mcu": "esp32c3",
+    "product": "C3 PICO",
+    "thumbnail": "",
+    "url": "https://www.wemos.cc/en/latest/c3/c3_pico.html",
+    "vendor": "Wemos"
+}
