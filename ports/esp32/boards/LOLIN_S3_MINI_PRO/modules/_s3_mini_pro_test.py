@@ -7,6 +7,7 @@ import vga1_16x16 as font16
 import time
 import qmi8658 as imu
 from machine import I2C
+from machine import Pin
 import machine
 import utime
 import gc
@@ -25,10 +26,10 @@ tft = tft_config.config()
 
 qmi=imu.QMI8658(I2C(0))
 
-ir=rmt_ir.ESP32_RMT_IR(9)
+ir=rmt_ir.ESP32_RMT_IR(s3minipro.PIN_IR)
 
 while(ir.available==0):
-    ir=rmt_ir.ESP32_RMT_IR(9)
+    ir=rmt_ir.ESP32_RMT_IR(s3minipro.PIN_IR)
 
 
 print("Alreay...")
@@ -184,8 +185,8 @@ def main():
 
     global page_state,tft
 
-    from machine import Pin
-    Pin(7,Pin.OUT,value=1)
+    
+    Pin(s3minipro.RGB_POWER,Pin.OUT,value=1)
 
     tft.init()
     tft.offset(2,1)  #offset for 0.85  GC9107 
