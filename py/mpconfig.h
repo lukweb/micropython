@@ -425,18 +425,6 @@
 // Convenience definition for whether any native or inline assembler emitter is enabled
 #define MICROPY_EMIT_MACHINE_CODE (MICROPY_EMIT_NATIVE || MICROPY_EMIT_INLINE_ASM)
 
-// Whether native relocatable code loaded from .mpy files is explicitly tracked
-// so that the GC cannot reclaim it.  Needed on architectures that allocate
-// executable memory on the MicroPython heap and don't explicitly track this
-// data some other way.
-#ifndef MICROPY_PERSISTENT_CODE_TRACK_RELOC_CODE
-#if !MICROPY_EMIT_MACHINE_CODE || defined(MP_PLAT_ALLOC_EXEC) || defined(MP_PLAT_COMMIT_EXEC)
-#define MICROPY_PERSISTENT_CODE_TRACK_RELOC_CODE (0)
-#else
-#define MICROPY_PERSISTENT_CODE_TRACK_RELOC_CODE (1)
-#endif
-#endif
-
 /*****************************************************************************/
 /* Compiler configuration                                                    */
 
@@ -688,6 +676,13 @@
 // etc. Not checking means segfault on overflow.
 #ifndef MICROPY_STACK_CHECK
 #define MICROPY_STACK_CHECK (MICROPY_CONFIG_ROM_LEVEL_AT_LEAST_EXTRA_FEATURES)
+#endif
+
+// Additional margin between the places in the runtime where Python stack is
+// checked and the actual end of the C stack. Needs to be large enough to avoid
+// overflows from function calls made between checks.
+#ifndef MICROPY_STACK_CHECK_MARGIN
+#define MICROPY_STACK_CHECK_MARGIN (0)
 #endif
 
 // Whether to have an emergency exception buffer
@@ -1299,6 +1294,11 @@ typedef double mp_float_t;
 #define MICROPY_PY_MICROPYTHON_HEAP_LOCKED (MICROPY_CONFIG_ROM_LEVEL_AT_LEAST_EVERYTHING)
 #endif
 
+// Support for micropython.RingIO()
+#ifndef MICROPY_PY_MICROPYTHON_RINGIO
+#define MICROPY_PY_MICROPYTHON_RINGIO (MICROPY_CONFIG_ROM_LEVEL_AT_LEAST_EXTRA_FEATURES)
+#endif
+
 // Whether to provide "array" module. Note that large chunk of the
 // underlying code is shared with "bytearray" builtin type, so to
 // get real savings, it should be disabled too.
@@ -1391,6 +1391,11 @@ typedef double mp_float_t;
 // Whether to provide fix for pow(1, NaN) and pow(NaN, 0), which both should be 1 not NaN.
 #ifndef MICROPY_PY_MATH_POW_FIX_NAN
 #define MICROPY_PY_MATH_POW_FIX_NAN (0)
+#endif
+
+// Whether to provide fix for gamma(-inf) to raise ValueError
+#ifndef MICROPY_PY_MATH_GAMMA_FIX_NEGINF
+#define MICROPY_PY_MATH_GAMMA_FIX_NEGINF (0)
 #endif
 
 // Whether to provide "cmath" module
@@ -1975,14 +1980,48 @@ typedef double mp_float_t;
 #define MICROPY_MAKE_POINTER_CALLABLE(p) (p)
 #endif
 
-// If these MP_PLAT_*_EXEC macros are overridden then the memory allocated by them
-// must be somehow reachable for marking by the GC, since the native code
-// generators store pointers to GC managed memory in the code.
-#ifndef MP_PLAT_ALLOC_EXEC
-#define MP_PLAT_ALLOC_EXEC(min_size, ptr, size) do { *ptr = m_new(byte, min_size); *size = min_size; } while (0)
+// Whether native text/BSS/rodata memory loaded from .mpy files is explicitly tracked
+// so that the GC cannot reclaim it.
+//
+// In general a port should let these options have their defaults, but the defaults here
+// can be overridden if needed by defining both MICROPY_PERSISTENT_CODE_TRACK_FUN_DATA
+// and MICROPY_PERSISTENT_CODE_TRACK_BSS_RODATA.
+#ifndef MICROPY_PERSISTENT_CODE_TRACK_FUN_DATA
+#if MICROPY_EMIT_MACHINE_CODE && MICROPY_PERSISTENT_CODE_LOAD
+// Pointer tracking is required when loading native code is enabled.
+#if defined(MP_PLAT_ALLOC_EXEC) || defined(MP_PLAT_COMMIT_EXEC)
+// If a port defined a custom allocator or commit function for native text, then the
+// text does not need to be tracked (its allocation is managed by the port).  But the
+// BSS/rodata must be tracked (if there is any) because if there are any pointers to it
+// in the function data, they aren't traced by the GC.
+#define MICROPY_PERSISTENT_CODE_TRACK_FUN_DATA (0)
+#define MICROPY_PERSISTENT_CODE_TRACK_BSS_RODATA (1)
+#else
+// If a port uses the default allocator (the GC heap) then all native text is allocated
+// on the GC heap.  But it's not guaranteed that a pointer to the head of the block of
+// native text (which may contain multiple native functions) will be retained for the GC
+// to trace.  This is because native functions can start inside the big block of text
+// and so it's possible that the only GC-reachable pointers are pointers inside.
+// Therefore the big block is explicitly tracked. If there is any BSS/rodata memory,
+// then it does not need to be explicitly tracked because a pointer to it is stored into
+// the function text via `mp_native_relocate()`.
+#define MICROPY_PERSISTENT_CODE_TRACK_FUN_DATA (1)
+#define MICROPY_PERSISTENT_CODE_TRACK_BSS_RODATA (0)
+#endif
+#else // MICROPY_EMIT_MACHINE_CODE && MICROPY_PERSISTENT_CODE_LOAD
+// Pointer tracking not needed when loading native code is disabled.
+#define MICROPY_PERSISTENT_CODE_TRACK_FUN_DATA (0)
+#define MICROPY_PERSISTENT_CODE_TRACK_BSS_RODATA (0)
+#endif
 #endif
 
-#ifndef MP_PLAT_FREE_EXEC
+// If these macros are defined then the memory allocated by them does not need to be
+// traced by the GC.  But if they are left undefined then the GC heap will be used as
+// the allocator and the memory must be traced by the GC.  See also above logic for
+// enabling MICROPY_PERSISTENT_CODE_TRACK_FUN_DATA and
+// MICROPY_PERSISTENT_CODE_TRACK_BSS_RODATA.
+#ifndef MP_PLAT_ALLOC_EXEC
+#define MP_PLAT_ALLOC_EXEC(min_size, ptr, size) do { *ptr = m_new(byte, min_size); *size = min_size; } while (0)
 #define MP_PLAT_FREE_EXEC(ptr, size) m_del(byte, ptr, size)
 #endif
 
