@@ -1,0 +1,20 @@
+{
+    "deploy": [
+        "../deploy_c3.md"
+    ],
+    "docs": "",
+    "features": [
+        "BLE",
+        "External Flash",
+        "USB-C",
+        "WiFi"
+    ],
+    "images": [
+        "lolin_xi_c3.jpg"
+    ],
+    "mcu": "esp32c3",
+    "product": "XI C3",
+    "thumbnail": "",
+    "url": "https://www.wemos.cc/en/latest/XI/xi_c3.html",
+    "vendor": "Wemos"
+}
