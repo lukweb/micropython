@@ -21,6 +21,7 @@ function ci_lolin_build {
     make ${MAKEOPTS} -C ports/esp32 BOARD=LOLIN_S3_PRO
     make ${MAKEOPTS} -C ports/esp32 BOARD=LOLIN_S3_MINI
     make ${MAKEOPTS} -C ports/esp32 BOARD=LOLIN_S3_MINI_PRO
+    make ${MAKEOPTS} -C ports/esp32 BOARD=LOLIN_XI_C3
 
 }
 
@@ -33,6 +34,10 @@ function ci_esp8266_build {
 
 function ci_gc9a01_mpy_setup {
     git clone https://github.com/wemos/gc9a01_mpy.git ../gc9a01_mpy
-    find ~/ -name "gc9a01*"
-    find ~/ -name "micropython"
+    # find ~/ -name "gc9a01*"
+    # find ~/ -name "micropython"
+}
+
+function ci_st7789_mpy_setup {
+    git clone https://github.com/wemos/st7789_mpy.git ../st7789_mpy
 }
